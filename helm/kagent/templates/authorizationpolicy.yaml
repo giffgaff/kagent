@@ -1,8 +1,8 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: {{ .kagent.fullname }}
-  namespace: {{ .Values.virtualservice.namespace | quote }}
+  name: {{ include "kagent.fullname" . }}
+  namespace: {{ include "kagent.namespace" . }}
 spec:
   action: ALLOW
   rules:
