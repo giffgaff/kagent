@@ -171,3 +171,13 @@ cilium-manager-agent:
 
 cilium-debug-agent:
   enabled: true
+
+serviceAccount:
+  annotations: {}
+
+virtualservice:
+  namespace: ""
+  whitelistIPs: []
+  hostname: ""
+  ingressgateway: ""
+  gateways: []
