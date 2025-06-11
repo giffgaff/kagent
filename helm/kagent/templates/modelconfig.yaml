@@ -16,6 +16,10 @@ spec:
   {{- with $model }}
   provider: {{ .provider | quote }}
   model: {{ .model | quote }}
+  modelInfo:
+    family: {{ $model.modelInfo.family | quote }}
+    functionCalling: true
+    jsonOutput: true
   {{- if $model.apiKeySecretRef }}
   apiKeySecretRef: {{.apiKeySecretRef}}
   {{- end }}
