@@ -182,3 +182,4 @@ virtualservice:
   ingressgateway: ""
   gateways: []
   istioNamespace: ""
+  port: 80

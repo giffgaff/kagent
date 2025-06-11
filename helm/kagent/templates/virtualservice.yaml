@@ -16,4 +16,6 @@ spec:
   - route:
       - destination:
           host: {{ include "kagent.fullname" . }}
+            port:
+                number: {{ .Values.virtualservice.port }}
 
