@@ -13,10 +13,6 @@ providers:
     apiKeySecretRef: kagent-openai
     apiKeySecretKey: OPENAI_API_KEY
     apiKey: ""
-  modelInfo:
-    family: ""
-    functionCalling: true
-    jsonOutput: true
   ollama:
     provider: Ollama
     model: "llama3.2"
@@ -187,3 +183,9 @@ virtualservice:
   gateways: []
   istioNamespace: ""
   port: 80
+
+model:
+  modelInfo:
+    family: ""
+    functionCalling: true
+    jsonOutput: true
