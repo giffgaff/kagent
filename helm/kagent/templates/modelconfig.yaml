@@ -17,7 +17,7 @@ spec:
   provider: {{ .provider | quote }}
   model: {{ .model | quote }}
   modelInfo:
-    family: {{ .Values.model.modelInfo.family | default "" | quote }}
+    family: {{ .provider.modelInfo.family | default "" | quote }}
     functionCalling: true
     jsonOutput: true
   {{- if $model.apiKeySecretRef }}
