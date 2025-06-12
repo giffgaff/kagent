@@ -13,10 +13,10 @@ providers:
     apiKeySecretRef: kagent-openai
     apiKeySecretKey: OPENAI_API_KEY
     apiKey: ""
-  modelInfo:
-    family: ""
-    functionCalling: true
-    jsonOutput: true
+    modelInfo:
+      family: ""
+      functionCalling: true
+      jsonOutput: true
   ollama:
     provider: Ollama
     model: "llama3.2"
