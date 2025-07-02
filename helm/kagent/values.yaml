@@ -181,3 +181,5 @@ virtualservice:
   hostname: ""
   ingressgateway: ""
   gateways: []
+  path_based_routing_api: false
+  path_based_routing_a2a: false
