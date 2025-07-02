@@ -5,6 +5,7 @@ metadata:
   namespace: {{ .Values.virtualservice.namespace }}
   labels:
     app: {{ include "kagent.fullname" . }}
+    {{- include "kagent.labels" $dot | nindent 4 }}
 spec:
   gateways:
   {{- range $hosts := .Values.virtualservice.gateways }}

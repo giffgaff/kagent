@@ -3,6 +3,8 @@ kind: AuthorizationPolicy
 metadata:
   name: {{ include "kagent.fullname" . }}
   namespace: {{ .Values.virtualservice.istioNamespace | quote }}
+  labels:
+    {{- include "kagent.labels" $dot | nindent 4 }}
 spec:
   action: ALLOW
   rules:
