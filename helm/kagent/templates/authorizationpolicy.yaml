@@ -1,0 +1,23 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "kagent.fullname" . }}
+  namespace: {{ .Values.virtualservice.istioNamespace | quote }}
+  labels:
+    {{- include "kagent.labels" . | nindent 4 }}
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            remoteIpBlocks:
+            {{- range $IPs := .Values.virtualservice.whitelistIPs }}
+            - {{ $IPs}}
+            {{- end }}
+      to:
+        - operation:
+            hosts:
+              - {{ .Values.virtualservice.hostname | quote }}
+  selector:
+    matchLabels:
+      app: {{ .Values.virtualservice.ingressgateway | quote }}
