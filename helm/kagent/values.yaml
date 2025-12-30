@@ -380,3 +380,17 @@ otel:
         endpoint: http://host.docker.internal:4317
         timeout: 15
         insecure: true
+
+serviceAccount:
+  annotations: {}
+
+virtualservice:
+  namespace: ""
+  whitelistIPs: []
+  hostname: ""
+  ingressgateway: ""
+  gateways: []
+  path_based_routing_api: false
+  path_based_routing_a2a: false
+  istioNamespace: ""
+  port: 80

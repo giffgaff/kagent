@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "kagent.fullname" . }}
+  namespace: {{ .Values.virtualservice.namespace }}
+  labels:
+    app: {{ include "kagent.fullname" . }}
+    {{- include "kagent.labels" . | nindent 4 }}
+spec:
+  gateways:
+  {{- range $hosts := .Values.virtualservice.gateways }}
+  - {{ $hosts }}
+  {{- end }}
+  hosts:
+    - {{ .Values.virtualservice.hostname | quote }}
+  http:
+  {{- if .Values.virtualservice.path_based_routing_a2a }}
+  - match:
+    - uri:
+        prefix: /api/a2a
+    name: a2a
+    route:
+    - destination:
+        host: {{ include "kagent.fullname" . }}
+        port:
+          number: 8083
+  {{- end }}
+  {{- if .Values.virtualservice.path_based_routing_api }}
+  - match:
+    - uri:
+        prefix: /api
+    name: api
+    route:
+    - destination:
+        host: {{ include "kagent.fullname" . }}
+        port:
+          number: 8081
+  {{- end }}
+  - route:
+      - destination:
+          host: {{ include "kagent.fullname" . }}
+          port:
+            number: {{ .Values.virtualservice.port }}
