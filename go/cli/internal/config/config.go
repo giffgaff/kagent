@@ -4,18 +4,24 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
+
+	kagentclient "github.com/kagent-dev/kagent/go/pkg/client"
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	APIURL       string `mapstructure:"api_url"`
-	UserID       string `mapstructure:"user_id"`
-	Namespace    string `mapstructure:"namespace"`
-	A2AURL       string `mapstructure:"a2a_url"`
-	OutputFormat string `mapstructure:"output_format"`
-	Verbose      bool   `mapstructure:"verbose"`
+	KAgentURL    string        `mapstructure:"kagent_url"`
+	Namespace    string        `mapstructure:"namespace"`
+	OutputFormat string        `mapstructure:"output_format"`
+	Verbose      bool          `mapstructure:"verbose"`
+	Timeout      time.Duration `mapstructure:"timeout"`
+}
+
+func (c *Config) Client() *kagentclient.ClientSet {
+	return kagentclient.New(c.KAgentURL, kagentclient.WithUserID("admin@kagent.dev"))
 }
 
 func Init() error {
@@ -37,12 +43,10 @@ func Init() error {
 	pflag.StringVar(&configFile, "config", configFile, "config file (default is $HOME/.kagent/config.yaml)")
 
 	// Set default values
-	viper.SetDefault("api_url", "http://localhost:8081/api")
-	viper.SetDefault("user_id", "admin@kagent.dev")
+	viper.SetDefault("kagent_url", "http://localhost:8083")
 	viper.SetDefault("output_format", "table")
 	viper.SetDefault("namespace", "kagent")
-	viper.SetDefault("a2a_url", "http://localhost:8083/api/a2a")
-
+	viper.SetDefault("timeout", 300*time.Second)
 	viper.MustBindEnv("USER_ID")
 
 	if err := viper.ReadInConfig(); err != nil {

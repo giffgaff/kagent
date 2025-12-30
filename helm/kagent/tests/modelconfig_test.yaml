@@ -25,7 +25,7 @@ tests:
           path: spec.model
           value: "gpt-4.1-mini"
       - equal:
-          path: spec.apiKeySecretRef
+          path: spec.apiKeySecret
           value: kagent-openai
       - equal:
           path: spec.apiKeySecretKey
@@ -41,9 +41,9 @@ tests:
           value: "Anthropic"
       - equal:
           path: spec.model
-          value: "claude-3-sonnet-20240229"
+          value: "claude-3-5-haiku-20241022"
       - equal:
-          path: spec.apiKeySecretRef
+          path: spec.apiKeySecret
           value: kagent-anthropic
       - equal:
           path: spec.apiKeySecretKey
@@ -61,7 +61,7 @@ tests:
           path: spec.model
           value: "gpt-4.1-mini"
       - equal:
-          path: spec.apiKeySecretRef
+          path: spec.apiKeySecret
           value: kagent-azure-openai
       - equal:
           path: spec.apiKeySecretKey

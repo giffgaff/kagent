@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FunctionCall } from "@/types/datamodel";
+import { FunctionCall } from "@/types";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { FunctionSquare, CheckCircle, Clock, Code, ChevronUp, ChevronDown, Loader2, Text, Check, Copy, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -102,9 +102,13 @@ const ToolDisplay = ({ call, result, status = "requested", isError = false }: To
             {areArgumentsExpanded ? <ChevronUp className="w-4 h-4 ml-auto" /> : <ChevronDown className="w-4 h-4 ml-auto" />}
           </Button>
           {areArgumentsExpanded && (
-            <ScrollArea className="mt-2 p-4 w-full max-h-96">
-              <pre className="text-xs whitespace-pre-wrap break-words">{call.arguments}</pre>
-            </ScrollArea>
+            <div className="relative">
+              <ScrollArea className="max-h-96 overflow-y-auto p-4 w-full mt-2 bg-muted/50">
+                <pre className="text-sm whitespace-pre-wrap break-words">
+                  {JSON.stringify(call.args, null, 2)}
+                </pre>
+              </ScrollArea>
+            </div>
           )}
         </div>
         <div className="mt-4 w-full">

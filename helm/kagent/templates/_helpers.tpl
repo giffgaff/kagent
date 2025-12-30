@@ -1,11 +1,4 @@
 {{/*
-Expand the name of the chart.
-*/}}
-{{- define "kagent.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
 Create a default fully qualified app name.
 */}}
 {{- define "kagent.fullname" -}}
@@ -21,35 +14,27 @@ Create a default fully qualified app name.
 {{- end }}
 
 {{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "kagent.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
 Common labels
 */}}
 {{- define "kagent.labels" -}}
-helm.sh/chart: {{ include "kagent.chart" . }}
+helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{ include "kagent.selectorLabels" . }}
 {{- if .Chart.Version }}
 app.kubernetes.io/version: {{ .Chart.Version | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/part-of: kagent
+{{- with .Values.labels }}
+{{ toYaml . | nindent 0 }}
+{{- end }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "kagent.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kagent.name" . }}
+app.kubernetes.io/name: {{ default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*Default provider name*/}}
-{{- define "kagent.defaultProviderName" -}}
-{{ .Values.providers.default | default "openAI" | lower}}
 {{- end }}
 
 {{/*Default model name*/}}
@@ -72,4 +57,79 @@ Removes duplicates
 {{- define "kagent.watchNamespaces" -}}
 {{- $nsSet := dict }}
 {{- .Values.controller.watchNamespaces | default list | uniq | join "," }}
+{{- end -}}
+
+{{/*
+UI selector labels
+*/}}
+{{- define "kagent.ui.selectorLabels" -}}
+{{ include "kagent.selectorLabels" . }}
+app.kubernetes.io/component: ui
+{{- end }}
+
+{{/*
+Controller selector labels
+*/}}
+{{- define "kagent.controller.selectorLabels" -}}
+{{ include "kagent.selectorLabels" . }}
+app.kubernetes.io/component: controller
+{{- end }}
+
+{{/*
+Engine selector labels
+*/}}
+{{- define "kagent.engine.selectorLabels" -}}
+{{ include "kagent.selectorLabels" . }}
+app.kubernetes.io/component: engine
+{{- end }}
+
+{{/*
+Controller labels
+*/}}
+{{- define "kagent.controller.labels" -}}
+{{ include "kagent.labels" . }}
+app.kubernetes.io/component: controller
+{{- end }}
+
+{{/*
+UI labels
+*/}}
+{{- define "kagent.ui.labels" -}}
+{{ include "kagent.labels" . }}
+app.kubernetes.io/component: ui
+{{- end }}
+
+{{/*
+Engine labels
+*/}}
+{{- define "kagent.engine.labels" -}}
+{{ include "kagent.labels" . }}
+app.kubernetes.io/component: engine
+{{- end }}
+
+{{/*
+Check if leader election should be enabled (more than 1 replica)
+*/}}
+{{- define "kagent.leaderElectionEnabled" -}}
+{{- gt (.Values.controller.replicas | int) 1 -}}
+{{- end -}}
+
+{{/*
+Validate controller configuration
+*/}}
+{{- define "kagent.validateController" -}}
+{{- if and (gt (.Values.controller.replicas | int) 1) (eq .Values.database.type "sqlite") -}}
+{{- fail "ERROR: controller.replicas cannot be greater than 1 when database.type is 'sqlite' as the SQLite database is local to the pod. Please either set controller.replicas to 1 or change database.type to 'postgres'." }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+A2A Base URL - computes the default URL based on the controller service name if not explicitly set
+*/}}
+{{- define "kagent.a2aBaseUrl" -}}
+{{- if .Values.controller.a2aBaseUrl -}}
+{{- .Values.controller.a2aBaseUrl -}}
+{{- else -}}
+{{- printf "http://%s-controller.%s.svc.cluster.local:%d" (include "kagent.fullname" .) (include "kagent.namespace" .) (.Values.controller.service.ports.port | int) -}}
+{{- end -}}
 {{- end -}}
