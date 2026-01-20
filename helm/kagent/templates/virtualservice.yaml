@@ -18,6 +18,9 @@ spec:
   - match:
     - uri:
         prefix: /api
+      rewrite:
+          enabled: true
+          path: '/'
     name: api
     route:
     - destination:
@@ -25,8 +28,3 @@ spec:
         port:
           number: 8083
   {{- end }}
-  - route:
-      - destination:
-          host: {{ include "kagent.fullname" . }}-ui
-          port:
-            number: 8080
