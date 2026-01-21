@@ -15,14 +15,7 @@ spec:
     - {{ .Values.virtualservice.hostname | quote }}
   http:
   {{- if .Values.virtualservice.path_based_routing_api }}
-  - match:
-    - uri:
-        prefix: /api
-      rewrite:
-          enabled: true
-          path: '/'
-    name: api
-    route:
+  - route:
     - destination:
         host: {{ include "kagent.fullname" . }}-controller
         port:
